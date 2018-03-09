@@ -2,6 +2,7 @@
 
 import base64
 import re
+import time
 
 import pyperclip
 
@@ -23,7 +24,9 @@ To, CC, Subject, Date を含む人間的なテキストをクリップボード�
 """
 
 def main():
-    lines = open("target").readlines()
+    bytes_ = open("target", "rb").read()
+    charset = re.compile(".*Content-Type:.*?charset=(?P<charset>.*?);.*").match(str(bytes_)).groupdict()["charset"]
+    lines = bytes_.decode(charset).split("\n")
     read = False
     wanted = []
     for line in lines:
@@ -59,7 +62,7 @@ def main():
     print(s)
     pyperclip.copy(s)
     print("\nがクリップボードへコピーされました。")
+    time.sleep(2)
 
 if __name__ == "__main__":
     main()
-    input("press enter to exit")
